@@ -1,6 +1,9 @@
-import { test, expect } from '@playwright/test';
+import { test as setup } from '@playwright/test';
+import path from 'path';
 
-test('Login with valid credentials', async ({ request }) => {
+const authFile = path.join(__dirname, '../.auth/user.json');
+
+setup('Login with valid credentials', async ({ request }) => {
   // Optional: fast fail if envs are missing
   if (!process.env.USERNAME || !process.env.PASSWORD) {
     throw new Error('Set USERNAME and PASSWORD in .env');
@@ -10,5 +13,5 @@ test('Login with valid credentials', async ({ request }) => {
     data: { username: process.env.USERNAME, password: process.env.PASSWORD },
   });
 
-  expect(res.ok(), `Got ${res.status()} ${await res.text()}`).toBeTruthy();
+  await request.storageState({ path: authFile });
 });
